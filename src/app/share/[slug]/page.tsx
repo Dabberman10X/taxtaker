@@ -236,7 +236,6 @@ export default async function SharePage({ params }: PageProps) {
 >
   Unlock Full Sovereign Report
 </Link>
-          </Link>
         </div>
       </div>
     </main>
