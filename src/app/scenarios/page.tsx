@@ -40,7 +40,7 @@ export default async function ScenariosPage() {
           </Link>
           <h1 className='text-4xl font-bold tracking-tight md:text-5xl'>Saved Scenarios</h1>
           <p className='text-zinc-400'>
-            Prototype admin-style view of scenarios saved from TaxTaker.
+            Recent public TaxTaker scenarios.
           </p>
         </div>
 
@@ -126,24 +126,6 @@ export default async function ScenariosPage() {
               </div>
 
               <div className='mt-6'>
-                <details className='rounded-xl border border-zinc-800 bg-black p-4'>
-                  <summary className='cursor-pointer font-semibold text-zinc-200'>
-                    View raw saved payload
-                  </summary>
-                  <pre className='mt-4 overflow-x-auto whitespace-pre-wrap text-xs text-zinc-400'>
-                    {JSON.stringify(
-                      {
-                        opportunity_cost: scenario.opportunity_cost,
-                        bitcoin_opportunity_projection: scenario.bitcoin_equivalent,
-                        best_location: scenario.best_location,
-                        location_ranking: scenario.location_ranking,
-                        assumptions_used: scenario.assumptions_used,
-                      },
-                      null,
-                      2
-                    )}
-                  </pre>
-                </details>
               </div>
             </div>
           ))}
