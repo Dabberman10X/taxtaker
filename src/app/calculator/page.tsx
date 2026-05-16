@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { calculateTaxFreedomDay } from '@/lib/calc/taxFreedomDay'
-import { calculateLeakScore } from '@/lib/calc/leakScore'
 import { opportunityCost } from '@/lib/calc/opportunityCost'
 import { rankLocations } from '@/lib/calc/rankLocations'
 import CopyShareCard from '@/components/CopyShareCard'
@@ -176,7 +175,18 @@ export default async function CalculatorPage({
   const { taxPaid, daysWorkedForTaxes, taxFreedomDay } =
     calculateTaxFreedomDay(income, taxRate)
 
-  const leak = calculateLeakScore(taxRate)
+  const wealthLeakPercent = (daysWorkedForTaxes / 365) * 100
+  const leak = {
+    score: Math.round(wealthLeakPercent),
+    category:
+      wealthLeakPercent >= 40
+        ? 'Extreme'
+        : wealthLeakPercent >= 30
+          ? 'High'
+          : wealthLeakPercent >= 20
+            ? 'Moderate'
+            : 'Low',
+  }
 
   const annualBtcLost = taxPaid / BTC_PRICE
   const btcLost20y = annualBtcLost * years
@@ -584,7 +594,7 @@ export default async function CalculatorPage({
           <div className='text-sm uppercase tracking-widest text-orange-400'>Inflation Drag Layer</div>
           <h2 className='mt-2 text-3xl font-bold'>Taxes hit first. Inflation hits what survives.</h2>
           <p className='mt-3 max-w-3xl text-zinc-400'>
-            At {inflationRatePercent.toFixed(0)}% inflation over {years} years, idle fiat cash loses purchasing power after taxes have already taken their cut. Hard and productive assets are shown separately because they do not behave like cash.
+            At {inflationRatePercent.toFixed(0)}% inflation over {years} years, idle fiat cash loses purchasing power after taxes have already taken their cut. Hard and productive assets are shown separately because they do not behave like idle fiat cash. Bitcoin keeps its modeled value here because the app treats it as the fixed-supply preservation asset in this comparison.
           </p>
 
           <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-3'>
@@ -631,8 +641,8 @@ export default async function CalculatorPage({
                 </tr>
                 <tr>
                   <td className='py-3 pr-4 font-semibold'>Bitcoin Scenario</td>
-                  <td className='py-3 pr-4'>Fixed-supply monetary asset</td>
-                  <td className='py-3 pr-4'>Fixed-supply monetary asset</td>
+                  <td className='py-3 pr-4'>{formatCurrency(btcScenarioValue, currentJurisdiction.currency_code ?? 'CAD')} — fixed-supply monetary asset</td>
+                  <td className='py-3 pr-4'>{formatCurrency(btcScenarioValue, currentJurisdiction.currency_code ?? 'CAD')} — fixed-supply monetary asset</td>
                 </tr>
               </tbody>
             </table>
