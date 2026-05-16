@@ -217,7 +217,9 @@ export default async function CalculatorPage({
 
   const inflationMultiplier = Math.pow(1 + inflationRate, years)
 
-  const realCashValue = base.cash / inflationMultiplier
+  const annualPostTaxSurplus = Math.max(0, income - taxPaid - spending)
+  const fiatLeftAfterTaxAndSpending = annualPostTaxSurplus * years
+  const realCashValue = fiatLeftAfterTaxAndSpending / inflationMultiplier
 
   // Hard/productive assets are not modeled like idle cash.
   // MVP framing:
@@ -231,7 +233,7 @@ export default async function CalculatorPage({
   const realRealEstateValue = base.realEstate
   const btcScenarioValue = base.bitcoin
 
-  const hiddenInflationLoss = base.cash - realCashValue
+  const hiddenInflationLoss = fiatLeftAfterTaxAndSpending - realCashValue
   const totalTaxOverHorizon = taxPaid * years
   const combinedTaxAndInflationDrag = totalTaxOverHorizon + hiddenInflationLoss
 
@@ -349,8 +351,9 @@ export default async function CalculatorPage({
       rate: inflationRate,
       rate_percent: inflationRatePercent,
       years,
-      nominal_cash_value: base.cash,
+      nominal_cash_value: fiatLeftAfterTaxAndSpending,
       real_cash_value: realCashValue,
+      annual_post_tax_surplus: annualPostTaxSurplus,
       hidden_inflation_loss: hiddenInflationLoss,
       total_tax_over_horizon: totalTaxOverHorizon,
       combined_tax_and_inflation_drag: combinedTaxAndInflationDrag,
@@ -594,7 +597,7 @@ export default async function CalculatorPage({
           <div className='text-sm uppercase tracking-widest text-orange-400'>Inflation Drag Layer</div>
           <h2 className='mt-2 text-3xl font-bold'>Taxes hit first. Inflation hits what survives.</h2>
           <p className='mt-3 max-w-3xl text-zinc-400'>
-            At {inflationRatePercent.toFixed(0)}% inflation over {years} years, idle fiat cash loses purchasing power after taxes have already taken their cut. Hard and productive assets are shown separately because they do not behave like idle fiat cash. Bitcoin keeps its modeled value here because the app treats it as the fixed-supply preservation asset in this comparison.
+            At {inflationRatePercent.toFixed(0)}% inflation over {years} years, the fiat left after taxes and spending loses purchasing power. Hard and productive assets are shown separately because they do not behave like idle fiat cash. Bitcoin keeps its modeled value here because the app treats it as the fixed-supply preservation asset in this comparison.
           </p>
 
           <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-3'>
@@ -626,7 +629,7 @@ export default async function CalculatorPage({
               <tbody>
                 <tr className='border-b border-orange-500/10'>
                   <td className='py-3 pr-4 font-semibold'>Cash</td>
-                  <td className='py-3 pr-4'>{formatCurrency(base.cash, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                  <td className='py-3 pr-4'>{formatCurrency(fiatLeftAfterTaxAndSpending, currentJurisdiction.currency_code ?? 'CAD')}</td>
                   <td className='py-3 pr-4'>{formatCurrency(realCashValue, currentJurisdiction.currency_code ?? 'CAD')} purchasing power</td>
                 </tr>
                 <tr className='border-b border-orange-500/10'>
