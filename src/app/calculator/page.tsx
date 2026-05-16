@@ -345,7 +345,7 @@ export default async function CalculatorPage({
         realEstate: realRealEstateValue,
         bitcoin: btcScenarioValue,
       },
-      note: 'Bitcoin scenario is not inflation-adjusted because BTC itself is not modeled as being diluted by fiat inflation.'
+      note: 'Bitcoin is modeled as a monetary preservation asset rather than a fiat-denominated savings vehicle.'
     },
     best_location: bestLocation,
     location_ranking: rankedLocations.slice(0, 8),
@@ -626,7 +626,7 @@ export default async function CalculatorPage({
                 <tr>
                   <td className='py-3 pr-4 font-semibold'>Bitcoin Scenario</td>
                   <td className='py-3 pr-4'>{formatCurrency(btcScenarioValue, currentJurisdiction.currency_code ?? 'CAD')}</td>
-                  <td className='py-3 pr-4'>Not inflation-adjusted</td>
+                  <td className='py-3 pr-4'>{formatCurrency(btcScenarioValue, currentJurisdiction.currency_code ?? 'CAD')}</td>
                 </tr>
               </tbody>
             </table>
