@@ -451,9 +451,9 @@ export default async function CalculatorPage({
               defaultValue={String(inflationRatePercent)}
               className='w-full rounded-lg border border-orange-500/30 bg-black px-3 py-2'
             >
-              <option value='3'>3% — Official CPI Mode</option>
+              <option value='3'>3% — Fake CPI Mode</option>
               <option value='7'>7% — Realistic Standard</option>
-              <option value='10'>10% — Just Under Tsunami Line</option>
+              <option value='10'>10% — Fiat Meltdown Zone</option>
             </select>
           </div>
           <div className='space-y-2'>
