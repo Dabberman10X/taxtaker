@@ -94,6 +94,27 @@ export default async function SharePage({ params }: PageProps) {
       ? bitcoinProjection.btc_price_assumption
       : null
 
+  const inflationProjection =
+    scenario.inflation_projection &&
+    typeof scenario.inflation_projection === 'object'
+      ? scenario.inflation_projection as Record<string, unknown>
+      : {}
+
+  const inflationRatePercent =
+    typeof inflationProjection.rate_percent === 'number'
+      ? inflationProjection.rate_percent
+      : null
+
+  const hiddenInflationLoss =
+    typeof inflationProjection.hidden_inflation_loss === 'number'
+      ? inflationProjection.hidden_inflation_loss
+      : null
+
+  const combinedTaxAndInflationDrag =
+    typeof inflationProjection.combined_tax_and_inflation_drag === 'number'
+      ? inflationProjection.combined_tax_and_inflation_drag
+      : null
+
   const topWatchlist = (watchlistRows ?? [])[0]
   const top20yDifference =
     topWatchlist && topWatchlist.estimated_20_year_wealth_difference !== null
@@ -184,6 +205,26 @@ export default async function SharePage({ params }: PageProps) {
           </div>
         </section>
 
+        {hiddenInflationLoss !== null && combinedTaxAndInflationDrag !== null ? (
+          <section className='rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6'>
+            <div className='text-sm uppercase tracking-widest text-orange-400'>Tax + Inflation Drag</div>
+            <h2 className='mt-2 text-3xl font-bold'>Taxes hit first. Inflation hits what survives.</h2>
+            <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-3'>
+              <div className='rounded-xl border border-orange-500/20 bg-black/40 p-4'>
+                <div className='text-sm text-zinc-400'>Hidden Inflation Loss</div>
+                <div className='mt-2 text-3xl font-bold'>{formatCurrency(hiddenInflationLoss, currency)}</div>
+              </div>
+              <div className='rounded-xl border border-orange-500/20 bg-black/40 p-4'>
+                <div className='text-sm text-zinc-400'>Tax + Inflation Drag</div>
+                <div className='mt-2 text-3xl font-bold'>{formatCurrency(combinedTaxAndInflationDrag, currency)}</div>
+              </div>
+              <div className='rounded-xl border border-orange-500/20 bg-black/40 p-4'>
+                <div className='text-sm text-zinc-400'>Inflation Setting</div>
+                <div className='mt-2 text-3xl font-bold'>{inflationRatePercent !== null ? inflationRatePercent.toFixed(0) + '%' : 'N/A'}</div>
+              </div>
+            </div>
+          </section>
+        ) : null}
         <section className='rounded-2xl border border-zinc-800 bg-zinc-950 p-6'>
           <div className='mb-2 text-sm text-zinc-400'>Move Benefit Snapshot</div>
           <div className='text-2xl font-bold'>

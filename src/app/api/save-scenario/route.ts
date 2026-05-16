@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 function makeSlug() {
@@ -25,6 +25,7 @@ export async function POST(request: Request) {
       wealth_leak_category,
       opportunity_cost,
       bitcoin_equivalent,
+      inflation_projection,
       best_location,
       location_ranking,
       assumptions_used,
@@ -53,6 +54,7 @@ export async function POST(request: Request) {
         wealth_leak_category,
         opportunity_cost,
         bitcoin_equivalent,
+        inflation_projection,
         best_location,
         location_ranking,
         assumptions_used,

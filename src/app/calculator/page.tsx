@@ -27,6 +27,7 @@ type SearchParams = Promise<{
   taxRate?: string
   spending?: string
   years?: string
+  inflation?: string
   current?: string
   compare1?: string
   compare2?: string
@@ -101,6 +102,8 @@ export default async function CalculatorPage({
   const income = Number(params.income ?? 54000)
   const spending = Number(params.spending ?? 48000)
   const years = Number(params.years ?? 20)
+  const inflationRatePercent = Number(params.inflation ?? 7)
+  const inflationRate = inflationRatePercent / 100
   const current = params.current ?? 'canada-ontario'
   const compare1 = params.compare1 ?? 'usa-florida'
   const compare2 = params.compare2 ?? 'uae-dubai'
@@ -201,6 +204,20 @@ export default async function CalculatorPage({
     realEstate: opportunityCost(taxPaid, 0.07, years),
     cash: opportunityCost(taxPaid, 0.03, years),
   }
+
+  const inflationMultiplier = Math.pow(1 + inflationRate, years)
+
+  const realCashValue = base.cash / inflationMultiplier
+  const realSp500Value = base.sp500 / inflationMultiplier
+  const realGoldValue = base.gold / inflationMultiplier
+  const realRealEstateValue = base.realEstate / inflationMultiplier
+
+  // Bitcoin is shown separately because BTC itself is not modeled as suffering fiat inflation dilution.
+  const btcScenarioValue = base.bitcoin
+
+  const hiddenInflationLoss = base.cash - realCashValue
+  const totalTaxOverHorizon = taxPaid * years
+  const combinedTaxAndInflationDrag = totalTaxOverHorizon + hiddenInflationLoss
 
   const rankedLocations = rankLocations(
     jurisdictionOptions.map((j) => ({
@@ -312,6 +329,24 @@ export default async function CalculatorPage({
       btc_lost_over_horizon: btcLost20y,
       btc_price_assumption: BTC_PRICE,
     },
+    inflation_projection: {
+      rate: inflationRate,
+      rate_percent: inflationRatePercent,
+      years,
+      nominal_cash_value: base.cash,
+      real_cash_value: realCashValue,
+      hidden_inflation_loss: hiddenInflationLoss,
+      total_tax_over_horizon: totalTaxOverHorizon,
+      combined_tax_and_inflation_drag: combinedTaxAndInflationDrag,
+      real_values: {
+        cash: realCashValue,
+        sp500: realSp500Value,
+        gold: realGoldValue,
+        realEstate: realRealEstateValue,
+        bitcoin: btcScenarioValue,
+      },
+      note: 'Bitcoin scenario is not inflation-adjusted because BTC itself is not modeled as being diluted by fiat inflation.'
+    },
     best_location: bestLocation,
     location_ranking: rankedLocations.slice(0, 8),
     assumptions_used: {
@@ -409,6 +444,18 @@ export default async function CalculatorPage({
             <input name='years' defaultValue={years} className='w-full rounded-lg border border-zinc-800 bg-black px-3 py-2' />
           </div>
 
+          <div className='space-y-2'>
+            <label className='text-sm text-zinc-400'>Inflation Layer</label>
+            <select
+              name='inflation'
+              defaultValue={String(inflationRatePercent)}
+              className='w-full rounded-lg border border-orange-500/30 bg-black px-3 py-2'
+            >
+              <option value='3'>3% — Official CPI Mode</option>
+              <option value='7'>7% — Realistic Standard</option>
+              <option value='10'>10% — Just Under Tsunami Line</option>
+            </select>
+          </div>
           <div className='space-y-2'>
             <label className='text-sm text-zinc-400'>Compare 1</label>
             <select name='compare1' defaultValue={compare1} className='w-full rounded-lg border border-zinc-800 bg-black px-3 py-2'>
@@ -527,6 +574,64 @@ export default async function CalculatorPage({
           </div>
         </section>
 
+        <section className='rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6'>
+          <div className='text-sm uppercase tracking-widest text-orange-400'>Inflation Drag Layer</div>
+          <h2 className='mt-2 text-3xl font-bold'>Taxes hit first. Inflation hits what survives.</h2>
+          <p className='mt-3 max-w-3xl text-zinc-400'>
+            At {inflationRatePercent.toFixed(0)}% inflation over {years} years, your modeled cash purchasing power falls hard after taxes have already taken their cut.
+          </p>
+
+          <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-3'>
+            <div className='rounded-xl border border-orange-500/20 bg-black/40 p-4'>
+              <div className='text-sm text-zinc-400'>Hidden Inflation Loss</div>
+              <div className='mt-2 text-3xl font-bold'>{formatCurrency(hiddenInflationLoss, currentJurisdiction.currency_code ?? 'CAD')}</div>
+            </div>
+
+            <div className='rounded-xl border border-orange-500/20 bg-black/40 p-4'>
+              <div className='text-sm text-zinc-400'>Tax + Inflation Drag</div>
+              <div className='mt-2 text-3xl font-bold'>{formatCurrency(combinedTaxAndInflationDrag, currentJurisdiction.currency_code ?? 'CAD')}</div>
+            </div>
+
+            <div className='rounded-xl border border-orange-500/20 bg-black/40 p-4'>
+              <div className='text-sm text-zinc-400'>Inflation Setting</div>
+              <div className='mt-2 text-3xl font-bold'>{inflationRatePercent.toFixed(0)}%</div>
+            </div>
+          </div>
+
+          <div className='mt-6 overflow-x-auto'>
+            <table className='w-full text-left text-sm'>
+              <thead>
+                <tr className='border-b border-orange-500/20 text-zinc-400'>
+                  <th className='py-3 pr-4'>Scenario</th>
+                  <th className='py-3 pr-4'>Nominal</th>
+                  <th className='py-3 pr-4'>Inflation Adjusted</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className='border-b border-orange-500/10'>
+                  <td className='py-3 pr-4 font-semibold'>Cash</td>
+                  <td className='py-3 pr-4'>{formatCurrency(base.cash, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                  <td className='py-3 pr-4'>{formatCurrency(realCashValue, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                </tr>
+                <tr className='border-b border-orange-500/10'>
+                  <td className='py-3 pr-4 font-semibold'>S&amp;P 500</td>
+                  <td className='py-3 pr-4'>{formatCurrency(base.sp500, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                  <td className='py-3 pr-4'>{formatCurrency(realSp500Value, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                </tr>
+                <tr className='border-b border-orange-500/10'>
+                  <td className='py-3 pr-4 font-semibold'>Gold</td>
+                  <td className='py-3 pr-4'>{formatCurrency(base.gold, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                  <td className='py-3 pr-4'>{formatCurrency(realGoldValue, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                </tr>
+                <tr>
+                  <td className='py-3 pr-4 font-semibold'>Bitcoin Scenario</td>
+                  <td className='py-3 pr-4'>{formatCurrency(btcScenarioValue, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                  <td className='py-3 pr-4'>Not inflation-adjusted</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
         <section className='rounded-2xl border border-zinc-800 bg-zinc-950 p-6'>
           <div className='mb-4 text-sm text-zinc-400'>Watchlist Comparison</div>
           <div className='overflow-x-auto'>
