@@ -208,11 +208,17 @@ export default async function CalculatorPage({
   const inflationMultiplier = Math.pow(1 + inflationRate, years)
 
   const realCashValue = base.cash / inflationMultiplier
-  const realSp500Value = base.sp500 / inflationMultiplier
-  const realGoldValue = base.gold / inflationMultiplier
-  const realRealEstateValue = base.realEstate / inflationMultiplier
 
-  // Bitcoin is shown separately because BTC itself is not modeled as suffering fiat inflation dilution.
+  // Hard/productive assets are not modeled like idle cash.
+  // MVP framing:
+  // Cash gets directly debased.
+  // S&P 500 has partial inflation pass-through through corporate pricing power.
+  // Gold is treated as a monetary hedge.
+  // Real estate is treated as a partial inflation hedge.
+  // Bitcoin is treated as a fixed-supply monetary preservation asset.
+  const realSp500Value = base.sp500
+  const realGoldValue = base.gold
+  const realRealEstateValue = base.realEstate
   const btcScenarioValue = base.bitcoin
 
   const hiddenInflationLoss = base.cash - realCashValue
@@ -345,7 +351,7 @@ export default async function CalculatorPage({
         realEstate: realRealEstateValue,
         bitcoin: btcScenarioValue,
       },
-      note: 'Bitcoin is modeled as a monetary preservation asset rather than a fiat-denominated savings vehicle.'
+      note: 'Inflation layer directly debases idle fiat cash. Productive assets and hard monetary assets are shown as inflation-resistant categories rather than being discounted like cash.'
     },
     best_location: bestLocation,
     location_ranking: rankedLocations.slice(0, 8),
@@ -578,7 +584,7 @@ export default async function CalculatorPage({
           <div className='text-sm uppercase tracking-widest text-orange-400'>Inflation Drag Layer</div>
           <h2 className='mt-2 text-3xl font-bold'>Taxes hit first. Inflation hits what survives.</h2>
           <p className='mt-3 max-w-3xl text-zinc-400'>
-            At {inflationRatePercent.toFixed(0)}% inflation over {years} years, your modeled cash purchasing power falls hard after taxes have already taken their cut.
+            At {inflationRatePercent.toFixed(0)}% inflation over {years} years, idle fiat cash loses purchasing power after taxes have already taken their cut. Hard and productive assets are shown separately because they do not behave like cash.
           </p>
 
           <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-3'>
@@ -604,29 +610,29 @@ export default async function CalculatorPage({
                 <tr className='border-b border-orange-500/20 text-zinc-400'>
                   <th className='py-3 pr-4'>Scenario</th>
                   <th className='py-3 pr-4'>Nominal</th>
-                  <th className='py-3 pr-4'>Inflation Adjusted</th>
+                  <th className='py-3 pr-4'>Inflation Response</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className='border-b border-orange-500/10'>
                   <td className='py-3 pr-4 font-semibold'>Cash</td>
                   <td className='py-3 pr-4'>{formatCurrency(base.cash, currentJurisdiction.currency_code ?? 'CAD')}</td>
-                  <td className='py-3 pr-4'>{formatCurrency(realCashValue, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                  <td className='py-3 pr-4'>{formatCurrency(realCashValue, currentJurisdiction.currency_code ?? 'CAD')} purchasing power</td>
                 </tr>
                 <tr className='border-b border-orange-500/10'>
                   <td className='py-3 pr-4 font-semibold'>S&amp;P 500</td>
                   <td className='py-3 pr-4'>{formatCurrency(base.sp500, currentJurisdiction.currency_code ?? 'CAD')}</td>
-                  <td className='py-3 pr-4'>{formatCurrency(realSp500Value, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                  <td className='py-3 pr-4'>Partial inflation pass-through</td>
                 </tr>
                 <tr className='border-b border-orange-500/10'>
                   <td className='py-3 pr-4 font-semibold'>Gold</td>
                   <td className='py-3 pr-4'>{formatCurrency(base.gold, currentJurisdiction.currency_code ?? 'CAD')}</td>
-                  <td className='py-3 pr-4'>{formatCurrency(realGoldValue, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                  <td className='py-3 pr-4'>Historical monetary hedge</td>
                 </tr>
                 <tr>
                   <td className='py-3 pr-4 font-semibold'>Bitcoin Scenario</td>
-                  <td className='py-3 pr-4'>{formatCurrency(btcScenarioValue, currentJurisdiction.currency_code ?? 'CAD')}</td>
-                  <td className='py-3 pr-4'>{formatCurrency(btcScenarioValue, currentJurisdiction.currency_code ?? 'CAD')}</td>
+                  <td className='py-3 pr-4'>Fixed-supply monetary asset</td>
+                  <td className='py-3 pr-4'>Fixed-supply monetary asset</td>
                 </tr>
               </tbody>
             </table>
