@@ -736,3 +736,4 @@ export default async function CalculatorPage({
     </main>
   )
 }
+
