@@ -125,6 +125,7 @@ export default function HomePage() {
         <footer className='mt-16 flex flex-wrap gap-4 border-t border-zinc-900 pt-8 text-sm text-zinc-500'>
           <Link href='/calculator' className='hover:text-zinc-300'>Calculator</Link>
           <Link href='/scenarios' className='hover:text-zinc-300'>Saved Scenarios</Link>
+          <Link href='/methodology' className='hover:text-zinc-300'>Methodology</Link>
           <Link href='/privacy' className='hover:text-zinc-300'>Privacy</Link>
           <Link href='/terms' className='hover:text-zinc-300'>Terms</Link>
           <Link href='/disclaimer' className='hover:text-zinc-300'>Disclaimer</Link>
