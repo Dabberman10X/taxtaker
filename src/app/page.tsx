@@ -131,6 +131,60 @@ export default function HomePage() {
           <Link href='/disclaimer' className='hover:text-zinc-300'>Disclaimer</Link>
         </footer>
       </section>
-    </main>
+    
+      <section className='mt-20'>
+        <div className='mb-6'>
+          <h2 className='text-3xl font-bold'>Who Uses TaxTaker?</h2>
+          <p className='mt-2 text-zinc-400'>
+            TaxTaker helps different types of people understand tax drag, inflation drag, and jurisdiction differences.
+          </p>
+        </div>
+
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+          <div className='rounded-2xl border border-zinc-800 bg-zinc-950 p-6'>
+            <div className='text-xl font-bold'>Bitcoiners</div>
+            <p className='mt-2 text-zinc-400'>
+              Estimate potential BTC accumulation lost to tax drag and inflation.
+            </p>
+          </div>
+
+          <div className='rounded-2xl border border-zinc-800 bg-zinc-950 p-6'>
+            <div className='text-xl font-bold'>Employees</div>
+            <p className='mt-2 text-zinc-400'>
+              Visualize how much of the year is spent working for taxes.
+            </p>
+          </div>
+
+          <div className='rounded-2xl border border-zinc-800 bg-zinc-950 p-6'>
+            <div className='text-xl font-bold'>Investors</div>
+            <p className='mt-2 text-zinc-400'>
+              Compare jurisdictions and long-term opportunity cost differences.
+            </p>
+          </div>
+
+          <div className='rounded-2xl border border-zinc-800 bg-zinc-950 p-6'>
+            <div className='text-xl font-bold'>Business Owners</div>
+            <p className='mt-2 text-zinc-400'>
+              Understand how taxes and inflation impact retained capital over time.
+            </p>
+          </div>
+
+          <div className='rounded-2xl border border-zinc-800 bg-zinc-950 p-6'>
+            <div className='text-xl font-bold'>Remote Workers</div>
+            <p className='mt-2 text-zinc-400'>
+              Explore how location choices may affect financial outcomes.
+            </p>
+          </div>
+
+          <div className='rounded-2xl border border-zinc-800 bg-zinc-950 p-6'>
+            <div className='text-xl font-bold'>High Earners</div>
+            <p className='mt-2 text-zinc-400'>
+              Measure the scale of long-term tax and inflation drag.
+            </p>
+          </div>
+        </div>
+      </section>
+
+</main>
   )
 }
