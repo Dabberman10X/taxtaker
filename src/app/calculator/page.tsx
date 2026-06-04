@@ -1,11 +1,4 @@
- PartnerLeadForm from '@/components/PartnerLeadForm'
- PartnerLeadForm from '@/components/PartnerLeadForm'
- PartnerLeadForm from '@/components/PartnerLeadForm'
- PartnerLeadForm from '@/components/PartnerLeadForm'
- PartnerLeadForm from '@/components/PartnerLeadForm'
- PartnerLeadForm from '@/components/PartnerLeadForm'
- PartnerLeadForm from '@/components/PartnerLeadForm'
-
+import PartnerLeadForm from '@/components/PartnerLeadForm'
 function formatDate(date: Date) {
   return date.toLocaleDateString('en-CA', {
     month: 'long',
