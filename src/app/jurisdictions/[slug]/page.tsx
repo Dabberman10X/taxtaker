@@ -1,3 +1,4 @@
+import PartnerLeadForm from '@/components/PartnerLeadForm'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
@@ -130,6 +131,22 @@ export default async function JurisdictionDetailPage({ params }: PageProps) {
             <a href='#' className='mt-4 inline-flex rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold hover:border-zinc-500'>
               Coming Soon
             </a>
+          </div>
+        </section>
+
+        <section className='rounded-2xl border border-green-500/30 bg-green-500/5 p-6'>
+          <div className='text-sm uppercase tracking-widest text-green-400'>Partner Match</div>
+          <h2 className='mt-2 text-3xl font-bold'>Need help exploring this jurisdiction?</h2>
+          <p className='mt-3 max-w-3xl text-zinc-400'>
+            Join the future partner list for relocation, residency, tax planning, business setup,
+            banking, Bitcoin-friendly jurisdictions, or second-citizenship help.
+          </p>
+
+          <div className='mt-6'>
+            <PartnerLeadForm
+              source='jurisdiction_page'
+              targetJurisdiction={jurisdiction.slug}
+            />
           </div>
         </section>
       </div>
