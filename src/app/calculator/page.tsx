@@ -1,3 +1,4 @@
+import PartnerLeadForm from '@/components/PartnerLeadForm'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { calculateTaxFreedomDay } from '@/lib/calc/taxFreedomDay'
@@ -733,7 +734,25 @@ export default async function CalculatorPage({
           </div>
         </section>
       </div>
-    </main>
+    
+        <section className='rounded-2xl border border-green-500/30 bg-green-500/5 p-6'>
+          <div className='text-sm uppercase tracking-widest text-green-400'>Partner Match</div>
+          <h2 className='mt-2 text-3xl font-bold'>Want help acting on this result?</h2>
+          <p className='mt-3 max-w-3xl text-zinc-400'>
+            Join the future partner list for relocation, residency, tax planning, business setup,
+            banking, Bitcoin-friendly jurisdictions, or second-citizenship help.
+          </p>
+
+          <div className='mt-6'>
+            <PartnerLeadForm
+              source='calculator_results'
+              persona={persona}
+              currentJurisdiction={currentJurisdiction.slug}
+              targetJurisdiction={bestLocation.slug}
+            />
+          </div>
+        </section>
+</main>
   )
 }
 
