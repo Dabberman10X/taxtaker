@@ -58,6 +58,15 @@ export default async function PartnerLeadsAdminPage({ searchParams }: PageProps)
           <p className='mt-3 text-zinc-400'>
             Private lead review dashboard. Latest 100 partner-interest submissions.
           </p>
+
+          <div className='mt-5 flex flex-wrap gap-3'>
+            <Link
+              href={`/api/admin/partner-leads/export?key=${encodeURIComponent(adminKey)}`}
+              className='rounded-xl border border-green-500/40 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-300 hover:bg-green-500/20'
+            >
+              Download CSV
+            </Link>
+          </div>
         </div>
 
         {error ? (
