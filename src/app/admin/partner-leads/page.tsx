@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
+import PartnerLeadStatusButtons from '@/components/PartnerLeadStatusButtons'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -79,8 +80,12 @@ export default async function PartnerLeadsAdminPage({ searchParams }: PageProps)
                   </p>
                 </div>
 
-                <div className='rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-300'>
-                  {label(lead.status)}
+                <div className='max-w-xl'>
+                  <PartnerLeadStatusButtons
+                    leadId={lead.id}
+                    initialStatus={lead.status}
+                    adminKey={adminKey}
+                  />
                 </div>
               </div>
 
